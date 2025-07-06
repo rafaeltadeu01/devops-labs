@@ -127,6 +127,21 @@ done
 | Destruir tudo                   | `vagrant destroy -f`                         |
 
 ---
+## ⚙️ Snapshot Recovey
+- Cria um snapshot com nome k8s-initial das VMs k8s-master, k8s-node1 e k8s-node2
+- Verifica se já existe esse snapshot
+- Oferece a opção de restaurar o cluster para o estado inicial
+- Evita reprovisionamento ao restaurar
+
+▶️ Como usar:
+- Abra o PowerShell no diretório do seu projeto k8slocal e execute:
+
+```powershell
+.\k8s-snapshot.ps1
+```
+
+
+---
 
 ## 📌 Ideal Para
 
