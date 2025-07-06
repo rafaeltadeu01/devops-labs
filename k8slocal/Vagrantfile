@@ -1,0 +1,33 @@
+VAGRANTFILE_API_VERSION = "2"
+
+NUM_WORKERS = 2
+MASTER_IP = "192.168.56.10"
+NODE_BASE_IP = "192.168.56.20"
+
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+  config.vm.box = "generic/debian12"
+  config.vm.synced_folder "./scripts", "/vagrant", type: "virtualbox"
+
+  config.vm.provider "virtualbox" do |vb|
+    vb.memory = 2048
+    vb.cpus = 2
+  end
+
+  # Master node
+  config.vm.define "k8s-master" do |master|
+    master.vm.hostname = "k8s-master"
+    master.vm.network "private_network", ip: MASTER_IP
+    master.vm.provision "shell", path: "scripts/common.sh"
+    master.vm.provision "shell", path: "scripts/master.sh", run: "always"
+  end
+
+  # Worker nodes
+  (1..NUM_WORKERS).each do |i|
+    config.vm.define "k8s-node#{i}" do |node|
+      node.vm.hostname = "k8s-node#{i}"
+      node.vm.network "private_network", ip: "#{NODE_BASE_IP}#{i}"
+      node.vm.provision "shell", path: "scripts/common.sh"
+      node.vm.provision "shell", path: "scripts/worker.sh", run: "always"
+    end  
+  end
+end
